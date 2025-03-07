@@ -97,6 +97,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                 user.setAge(rs.getByte("age"));
                 users.add(user);
             }
+            rs.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
