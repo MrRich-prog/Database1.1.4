@@ -15,11 +15,13 @@ public class Util {
     private static final String USERNAME = "MrRich";
     private static final String PASSWORD = "root";
 
-
+    private Util() {
+    }
 
     //JDBC
-    public Connection getConnection() {
-        Connection connection;
+    private static Connection connection;
+
+    public static Connection getConnection() {
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
@@ -28,34 +30,20 @@ public class Util {
         }
         return connection;
     }
-    public void closeConnection(Connection connection) {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public void closePrepareStatement(PreparedStatement ps) {
-        if (ps != null) {
+
+    public static void closeConnection() {
+        if (connection != null) {
             try {
-                ps.close();
+                connection.close();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    public void closeStatement(Statement stmt) {
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     //Hibernate
     private static SessionFactory sessionFactory;
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
@@ -77,4 +65,15 @@ public class Util {
         }
         return sessionFactory;
     }
+
+    public static void closeSessionFactory() {
+        if (sessionFactory != null) {
+            try {
+                sessionFactory.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }
