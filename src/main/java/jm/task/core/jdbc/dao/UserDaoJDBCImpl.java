@@ -45,19 +45,23 @@ public class UserDaoJDBCImpl implements UserDao {
             ps.setString(1, name);
             ps.setString(2, lastName);
             ps.setByte(3, age);
-
             connection.setAutoCommit(false);
-            try {
-                ps.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-            }
-            connection.setAutoCommit(true);
-
+            ps.executeUpdate();
+            connection.commit();
             System.out.println("Пользователь - " + name + " " + lastName + " " + age + " -  добавлен");
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -65,19 +69,23 @@ public class UserDaoJDBCImpl implements UserDao {
     public void removeUserById(long id) {
         String sql = "DELETE FROM USERSTABLE WHERE `id` = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-
             connection.setAutoCommit(false);
-            try {
-                ps.setLong(1, id);
-                ps.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-            }
-            connection.setAutoCommit(true);
-
+            ps.setLong(1, id);
+            ps.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -104,18 +112,22 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         String sql = "DELETE FROM USERSTABLE";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-
             connection.setAutoCommit(false);
-            try {
-                ps.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-            }
-            connection.setAutoCommit(true);
-
+            ps.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
